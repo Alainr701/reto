@@ -37,20 +37,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'RETO 4434444',
-        debugShowCheckedModeBanner: true,
+        title: 'RETO',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
         home: StreamBuilder<User?>(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
-              return Column(
-                children: const [
-                   LoginScreen(),
-                   SizedBox()
-                ],
-              );
+              if (snapshot.hasData) {
+                print(snapshot.data!.uid);
+                return  HomeScreen(uid:snapshot.data!.uid);
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return const LoginScreen();
             }));
   }
 }
